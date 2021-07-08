@@ -65,10 +65,10 @@ ENTRYPOINT \
     aws s3 cp ./${OUTPUT_USDZ_FILE} s3://${OUTPUT_S3_PATH}/${OUTPUT_USDZ_FILE} --region ${AWS_REGION}
 
 # Example for local testing:
-# docker run -e INPUT_GLB_S3_FILEPATH='myBucket/myS3Dir/myModel.glb' \
+# docker run -e INPUT_S3_FILEPATH='myBucket/myS3Dir/myModel.glb' \
 #   -e OUTPUT_USDZ_FILE='myModel.usdz' \
 #   -e OUTPUT_S3_PATH='myBucket/myS3Dir' \
 #   -e AWS_REGION='us-west-2' \
 #   -e AWS_ACCESS_KEY_ID='<your-access-key>' \
 #   -e AWS_SECRET_ACCESS_KEY='<your-secret-key>' \
-#   -it --rm awsleochan/docker-glb-to-usdz-to-s3
+#   -it --rm 057591898454.dkr.ecr.us-east-1.amazonaws.com/glb-gltf-to-usdz-converter
