@@ -45,30 +45,7 @@ RUN git init && \
 RUN mkdir /usr/app
 WORKDIR /usr/app
 
-# ---------------------------------------------------------------------
-# install the aws cli
-RUN apt-get update && \
-    apt-get install python-dev python-pip -y && \
-    apt-get clean
+COPY input-file.glb /usr/app
 
-RUN pip install awscli
-
-
-# copy file from s3, convert, then upload coverted usdz to s3
-ENTRYPOINT \
-    localFile=$(basename $INPUT_S3_FILEPATH) && \
-    echo "Copying s3://${INPUT_S3_FILEPATH} to local $localFile ..."  && \
-    aws s3 cp s3://${INPUT_S3_FILEPATH} $localFile && \
-    echo "Converting $localFile to ${OUTPUT_USDZ_FILE} ..." && \
-    usd_from_gltf $localFile ${OUTPUT_USDZ_FILE} && \
-    echo "Copying ${OUTPUT_USDZ_FILE} to s3://${OUTPUT_S3_PATH}/${OUTPUT_USDZ_FILE} ..." && \
-    aws s3 cp ./${OUTPUT_USDZ_FILE} s3://${OUTPUT_S3_PATH}/${OUTPUT_USDZ_FILE} --region ${AWS_REGION}
-
-# Example for local testing:
-# docker run -e INPUT_S3_FILEPATH='myBucket/myS3Dir/myModel.glb' \
-#   -e OUTPUT_USDZ_FILE='myModel.usdz' \
-#   -e OUTPUT_S3_PATH='myBucket/myS3Dir' \
-#   -e AWS_REGION='us-west-2' \
-#   -e AWS_ACCESS_KEY_ID='<your-access-key>' \
-#   -e AWS_SECRET_ACCESS_KEY='<your-secret-key>' \
-#   -it --rm 057591898454.dkr.ecr.us-east-1.amazonaws.com/glb-gltf-to-usdz-converter
+ENTRYPOINT echo "Glb to usdz converter :" && \
+    usd_from_gltf /usr/app/input-file.glb input-file.usdz
